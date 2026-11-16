@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño Arquitectónico y Plano Residencial de Lujo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        architect: {
+                            50: '#f4f6f8',
+                            100: '#e2e8f0',
+                            600: '#2563eb',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            accent: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(37, 99, 235, 0.07) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(37, 99, 235, 0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .room-card {
+            transition: all 0.25s ease-in-out;
+        }
+        .room-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-architect-50 text-architect-800 min-h-full flex flex-col">
+
+    <!-- Header / Branding -->
+    <header class="bg-architect-900 text-white shadow-lg border-b border-architect-800">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold">Proyecto Residencial de Lujo</span>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Estudio Arquitectónico & Plano Interactivo</h1>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-3 text-sm text-slate-300">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-200 border border-blue-700">
+                    Área Total Estimada: ~340 m²
+                </span>
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow transition text-xs sm:text-sm flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Imprimir / Guardar PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Architectural Overview / Intro -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-900 mb-2">Memoria Descriptiva del Diseño</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Basado en los requerimientos manuscritos proporcionados, este proyecto arquitectónico de tres niveles maximiza la comodidad, accesibilidad y eficiencia espacial. Cuenta con una <strong>Planta Baja</strong> enfocada en la vida social y áreas accesibles, una <strong>Planta Alta</strong> dedicada al descanso privado con habitaciones en suite, y un <strong>Nivel Subterráneo</strong> exclusivo para el bienestar y la recreación acuática subterránea.
+            </p>
+        </div>
+
+        <!-- Level Selector Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6" id="level-tabs">
+            <button onclick="switchLevel('pb')" id="btn-pb" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-blue-600 text-white flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Planta Baja
+            </button>
+            <button onclick="switchLevel('pa')" id="btn-pa" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                Planta Alta
+            </button>
+            <button onclick="switchLevel('sub')" id="btn-sub" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                Nivel Subterráneo
+            </button>
+        </div>
+
+        <!-- Interactive Blueprint Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Floor Plan Graphic / Schematic Area -->
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 id="plan-title" class="text-lg font-bold text-slate-900">Planta Baja - Distribución Arquitectónica</h3>
+                        <p id="plan-subtitle" class="text-xs text-slate-500">Áreas sociales, cocina principal, accesibilidad universal y patio exterior.</p>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2.5 py-1 rounded border border-slate-200">Escala 1:100</span>
+                </div>
+
+                <!-- Visual Blueprint Canvas / Interactive Grid -->
+                <div class="blueprint-grid relative flex-grow min-h-[400px] bg-slate-50 border-2 border-dashed border-blue-200 rounded-xl p-4 flex items-center justify-center overflow-hidden">
+                    
+                    <!-- SVG Interactive Blueprint Diagram -->
+                    <div id="blueprint-svg-container" class="w-full h-full flex items-center justify-center">
+                        <!-- Planta Baja Diagram -->
+                        <div id="diagram-pb" class="w-full h-full grid grid-cols-3 gap-3">
+                            <div onclick="selectRoom('Habitación Accesible')" class="room-card bg-emerald-50 border border-emerald-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-emerald-800">Habitación Accesible</span>
+                                <span class="text-[11px] text-emerald-700">4.0m x 4.5m (18 m²)</span>
+                                <span class="text-[10px] bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded w-max mt-1">+ Baño adaptado</span>
+                            </div>
+                            <div onclick="selectRoom('Sala Comedor')" class="room-card bg-blue-50 border border-blue-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-blue-900">Sala - Comedor Integrado</span>
+                                <span class="text-[11px] text-blue-700">6.5m x 5.0m (32.5 m²)</span>
+                                <span class="text-[10px] bg-blue-200 text-blue-900 px-1.5 py-0.5 rounded w-max mt-1">Doble altura y ventanales</span>
+                            </div>
+                            <div onclick="selectRoom('Cocina con Isla')" class="room-card bg-amber-50 border border-amber-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-amber-900">Cocina Grande con Isla Central</span>
+                                <span class="text-[11px] text-amber-700">5.0m x 4.0m (20 m²)</span>
+                                <span class="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded w-max mt-1">Islote desayunador + despensa</span>
+                            </div>
+                            <div onclick="selectRoom('Baño Social')" class="room-card bg-slate-100 border border-slate-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-slate-800">Baño Social</span>
+                                <span class="text-[11px] text-slate-600">2.0m x 2.2m (4.4 m²)</span>
+                                <span class="text-[10px] bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded w-max mt-1">Visitas</span>
+                            </div>
+                            <div onclick="selectRoom('Cuarto de Lavado')" class="room-card bg-indigo-50 border border-indigo-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-indigo-900">Cuarto de Lavado</span>
+                                <span class="text-[11px] text-indigo-700">2.5m x 3.0m (7.5 m²)</span>
+                                <span class="text-[10px] bg-indigo-200 text-indigo-900 px-1.5 py-0.5 rounded w-max mt-1">Servicio</span>
+                            </div>
+                            <div onclick="selectRoom('Terraza y Piscina Exterior')" class="room-card bg-teal-50 border border-teal-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-teal-900">Terraza / Patio Grande con Piscina</span>
+                                <span class="text-[11px] text-teal-700">10.0m x 6.0m (60 m²)</span>
+                                <span class="text-[10px] bg-teal-200 text-teal-900 px-1.5 py-0.5 rounded w-max mt-1">Área recreativa y solárium</span>
+                            </div>
+                        </div>
+
+                        <!-- Planta Alta Diagram (Hidden by default) -->
+                        <div id="diagram-pa" class="w-full h-full hidden grid-cols-2 gap-3">
+                            <div onclick="selectRoom('Cuarto Principal')" class="room-card bg-purple-50 border border-purple-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-purple-900">Cuarto Principal (Master Suite)</span>
+                                <span class="text-[11px] text-purple-700">6.0m x 4.5m (27 m²)</span>
+                                <span class="text-[10px] bg-purple-200 text-purple-900 px-1.5 py-0.5 rounded w-max mt-1">Baño integrado con tina y vestidor</span>
+                            </div>
+                            <div onclick="selectRoom('Habitación Infantil')" class="room-card bg-rose-50 border border-rose-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-rose-900">Habitación Infantil</span>
+                                <span class="text-[11px] text-rose-700">4.0m x 4.0m (16 m²)</span>
+                                <span class="text-[10px] bg-rose-200 text-rose-900 px-1.5 py-0.5 rounded w-max mt-1">+ Baño integrado</span>
+                            </div>
+                            <div onclick="selectRoom('Oficina')" class="room-card bg-sky-50 border border-sky-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-sky-900">Oficina / Estudio</span>
+                                <span class="text-[11px] text-sky-700">3.5m x 4.0m (14 m²)</span>
+                                <span class="text-[10px] bg-sky-200 text-sky-900 px-1.5 py-0.5 rounded w-max mt-1">Espacio de trabajo ergonómico</span>
+                            </div>
+                            <div onclick="selectRoom('Terraza Grande')" class="room-card bg-cyan-50 border border-cyan-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-cyan-900">Terraza Grande Superior</span>
+                                <span class="text-[11px] text-cyan-700">8.0m x 3.5m (28 m²)</span>
+                                <span class="text-[10px] bg-cyan-200 text-cyan-900 px-1.5 py-0.5 rounded w-max mt-1">Vista panorámica frontal</span>
+                            </div>
+                        </div>
+
+                        <!-- Nivel Subterráneo Diagram (Hidden by default) -->
+                        <div id="diagram-sub" class="w-full h-full hidden grid-cols-2 gap-3">
+                            <div onclick="selectRoom('Alberca Subterránea')" class="room-card bg-blue-900 text-white border border-blue-700 rounded-lg p-4 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-sm font-bold text-blue-200">Alberca Grande Subterránea / Climatizada</span>
+                                <span class="text-xs text-blue-300">10.0m x 5.0m (50 m²)</span>
+                                <span class="text-[10px] bg-blue-700 text-blue-100 px-2 py-0.5 rounded w-max mt-1">Iluminación LED perimetral y sistema de filtración avanzado</span>
+                            </div>
+                            <div onclick="selectRoom('Mini Gimnasio')" class="room-card bg-orange-50 border border-orange-300 rounded-lg p-4 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-sm font-bold text-orange-900">Mini Gimnasio & Zona Wellness</span>
+                                <span class="text-xs text-orange-700">7.0m x 5.0m (35 m²)</span>
+                                <span class="text-[10px] bg-orange-200 text-orange-900 px-2 py-0.5 rounded w-max mt-1">Área para pesas, cardio y estiramiento con ventilación forzada</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-2 right-3 text-[10px] text-slate-400 bg-white/80 px-2 py-0.5 rounded backdrop-blur-sm">
+                        * Haz clic en cualquier estancia para ver especificaciones técnicas.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Inspector / Technical Details Sidebar -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                        <h3 class="text-base font-bold text-slate-900">Inspector de Espacios</h3>
+                        <span class="text-xs text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full font-medium">Detalle Técnico</span>
+                    </div>
+
+                    <div id="room-details" class="space-y-4">
+                        <div>
+                            <h4 id="det-name" class="text-lg font-bold text-slate-800">Seleccione una estancia</h4>
+                            <p id="det-category" class="text-xs text-blue-600 font-semibold mt-0.5">Planta Baja</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Dimensiones</span>
+                                <span id="det-dims" class="text-sm font-semibold text-slate-700">-</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Área Estimada</span>
+                                <span id="det-area" class="text-sm font-semibold text-slate-700">-</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-700 mb-1">Acabados y Equipamiento:</span>
+                            <p id="det-desc" class="text-xs text-slate-600 leading-relaxed">
+                                Haga clic en cualquier sección del plano interactivo para consultar los materiales recomendados, instalaciones hidrosanitarias y consideraciones de diseño interior.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leyenda Arquitectónica -->
+                <div class="mt-6 pt-4 border-t border-slate-100">
+                    <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Leyenda de Niveles</h5>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-blue-50 text-blue-800 p-2 rounded border border-blue-200 font-medium">P. Baja</div>
+                        <div class="bg-purple-50 text-purple-800 p-2 rounded border border-purple-200 font-medium">P. Alta</div>
+                        <div class="bg-slate-900 text-white p-2 rounded border border-slate-800 font-medium">Subterráneo</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comprehensive List of Requirements breakdown -->
+        <div class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Listado Completo de Requerimientos Arquitectónicos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="requirements-grid">
+                
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">01</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Baño Social</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ubicación estratégica en zona pública de la Planta Baja para visitas.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">02</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cocina Grande con Isla</h4>
+                        <p class="text-xs text-slate-600 mt-1">Diseño abierto con barra desayunadora, campana extractora central y despensa.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">03</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Sala Comedor</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio diáfano con excelente iluminación natural y vistas directas a la terraza.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">04</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cuarto Principal con Baño Integrado</h4>
+                        <p class="text-xs text-slate-600 mt-1">Master suite en Planta Alta con vestidor (walk-in closet) y baño privado en suite.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">05</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Habitación Infantil con Baño</h4>
+                        <p class="text-xs text-slate-600 mt-1">Dormitorio secundario en Planta Alta equipado con baño propio y zona de estudio.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">06</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Habitación Accesible (Adaptado)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ubicada en Planta Baja sin desniveles, puertas anchas y baño adaptado para movilidad reducida.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">07</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cuarto de Lavado</h4>
+                        <p class="text-xs text-slate-600 mt-1">Área independiente de servicio con instalaciones para lavadora, secadora y tendido.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">08</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Terraza / Patio con Piscina</h4>
+                        <p class="text-xs text-slate-600 mt-1">Patio exterior amplio con zona de descanso, pérgola y piscina recreativa al aire libre.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">09</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Oficina / Estudio</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio privado e iluminado en Planta Alta ideal para home office y lectura.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">10</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Terraza Grande Superior</h4>
+                        <p class="text-xs text-slate-600 mt-1">Mirador exterior en Planta Alta conectado con el área de descanso.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">11</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Mini Gimnasio</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio wellness en Nivel Subterráneo para ejercicio y bienestar físico.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">12</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Alberca Subterránea</h4>
+                        <p class="text-xs text-slate-600 mt-1">Piscina climatizada en sótano con tratamiento de humedad y ambiente exclusivo.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-500">
+        <p>Estudio de Arquitectura e Interiorismo • Proyecto Residencial Personalizado • Diseñado con medidas estándar y normativas constructivas.</p>
+    </footer>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        const roomDatabase = {
+            'Habitación Accesible': {
+                cat: 'Planta Baja (Accesibilidad Universal)',
+                dims: '4.0m x 4.5m',
+                area: '18.0 m²',
+                desc: 'Diseñada sin escalones ni desniveles. Cuenta con puertas de 90 cm de ancho, sistema de domótica básica y un baño adaptado con barras de apoyo ergonómicas y ducha sin mampara.'
+            },
+            'Sala Comedor': {
+                cat: 'Planta Baja (Zona Social)',
+                dims: '6.5m x 5.0m',
+                area: '32.5 m²',
+                desc: 'Espacio integrado de concepto abierto. Cuenta con doble altura en la zona de sala, iluminación empotrada cálida y ventanales corredizos de suelo a techo hacia la terraza principal.'
+            },
+            'Cocina con Isla': {
+                cat: 'Planta Baja (Gastronomía)',
+                dims: '5.0m x 4.0m',
+                area: '20.0 m²',
+                desc: 'Cocina equipada con isla central de granito de 3x1.2 metros, gavetas de cierre suave, espacio para torre de hornos y conexión directa al cuarto de lavado.'
+            },
+            'Baño Social': {
+                cat: 'Planta Baja (Servicios)',
+                dims: '2.0m x 2.2m',
+                area: '4.4 m²',
+                desc: 'Lavamanos flotante con espejo retroiluminado LED, sanitario de doble descarga y acabados en porcelanato tipo mármol.'
+            },
+            'Cuarto de Lavado': {
+                cat: 'Planta Baja (Servicios)',
+                dims: '2.5m x 3.0m',
+                area: '7.5 m²',
+                desc: 'Área independiente con ventilación natural, lavadero de granito, conexiones para lavadora/secadora en torre y espacio de guardado para blancos.'
+            },
+            'Terraza y Piscina Exterior': {
+                cat: 'Planta Baja (Exterior)',
+                dims: '10.0m x 6.0m',
+                area: '60.0 m²',
+                desc: 'Piscina al aire libre con acabado veneciano, área de deck de madera tratada para intemperie y espacio para tumbonas y barbacoa.'
+            },
+            'Cuarto Principal': {
+                cat: 'Planta Alta (Descanso)',
+                dims: '6.0m x 4.5m',
+                area: '27.0 m²',
+                desc: 'Master suite con vestidor independiente (walk-in closet) y baño privado equipado con tina de hidromasaje y ducha separada.'
+            },
+            'Habitación Infantil': {
+                cat: 'Planta Alta (Descanso)',
+                dims: '4.0m x 4.0m',
+                area: '16.0 m²',
+                desc: 'Habitación secundaria con excelente iluminación natural, espacio para cama king o dos individuales, zona de estudio y baño integrado en suite.'
+            },
+            'Oficina': {
+                cat: 'Planta Alta (Trabajo)',
+                dims: '3.5m x 4.0m',
+                area: '14.0 m²',
+                desc: 'Estudio privado con aislamiento acústico, librerías empotradas y conexión directa de fibra óptica y red.'
+            },
+            'Terraza Grande': {
+                cat: 'Planta Alta (Exterior)',
+                dims: '8.0m x 3.5m',
+                area: '28.0 m²',
+                desc: 'Terraza superior frontal con baranda de cristal templado y acero inoxidable, ideal para contemplar las vistas exteriores.'
+            },
+            'Alberca Subterránea': {
+                cat: 'Nivel Subterráneo (Wellness)',
+                dims: '10.0m x 5.0m',
+                area: '50.0 m²',
+                desc: 'Piscina climatizada en sótano con sistema de deshumidificación industrial, iluminación subacuática ambiental y acabados de diseño minimalista.'
+            },
+            'Mini Gimnasio': {
+                cat: 'Nivel Subterráneo (Wellness)',
+                dims: '7.0m x 5.0m',
+                area: '35.0 m²',
+                desc: 'Gimnasio privado con piso de caucho de alta densidad, espejos de pared completa, ventilación mecánica y área para máquinas cardiovasculares.'
+            }
+        };
+
+        function switchLevel(level) {
+            // Reset tab styles
+            ['pb', 'pa', 'sub'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                const diag = document.getElementById(`diagram-${l}`);
+                if (l === level) {
+                    btn.className = "flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-blue-600 text-white flex items-center justify-center gap-2";
+                    diag.classList.remove('hidden');
+                    diag.classList.add('grid');
+                } else {
+                    btn.className = "flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2";
+                    diag.classList.add('hidden');
+                    diag.classList.remove('grid');
+                }
+            });
+
+            // Update title
+            const titles = {
+                'pb': { title: 'Planta Baja - Distribución Arquitectónica', subtitle: 'Áreas sociales, cocina principal, accesibilidad universal y patio exterior.' },
+                'pa': { title: 'Planta Alta - Zona Privada y Descanso', subtitle: 'Cuarto principal, habitación infantil, oficina y terraza superior.' },
+                'sub': { title: 'Nivel Subterráneo - Bienestar y Recreación', subtitle: 'Alberca subterránea climatizada y mini gimnasio.' }
+            };
+
+            document.getElementById('plan-title').innerText = titles[level].title;
+            document.getElementById('plan-subtitle').innerText = titles[level].subtitle;
+        }
+
+        function selectRoom(roomName) {
+            const data = roomDatabase[roomName];
+            if (!data) return;
+
+            document.getElementById('det-name').innerText = roomName;
+            document.getElementById('det-category').innerText = data.cat;
+            document.getElementById('det-dims').innerText = data.dims;
+            document.getElementById('det-area').innerText = data.area;
+            document.getElementById('det-desc').innerText = data.desc;
+        }
+
+        // Initialize with default selection
+        window.onload = function() {
+            selectRoom('Habitación Accesible');
+        };
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño Arquitectónico y Plano Residencial de Lujo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        architect: {
+                            50: '#f4f6f8',
+                            100: '#e2e8f0',
+                            600: '#2563eb',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            accent: '#d97706'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(37, 99, 235, 0.07) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(37, 99, 235, 0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .room-card {
+            transition: all 0.25s ease-in-out;
+        }
+        .room-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-architect-50 text-architect-800 min-h-full flex flex-col">
+
+    <!-- Header / Branding -->
+    <header class="bg-architect-900 text-white shadow-lg border-b border-architect-800">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold">Proyecto Residencial de Lujo</span>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Estudio Arquitectónico & Plano Interactivo</h1>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-3 text-sm text-slate-300">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-200 border border-blue-700">
+                    Área Total Estimada: ~340 m²
+                </span>
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow transition text-xs sm:text-sm flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Imprimir / Guardar PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Architectural Overview / Intro -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+            <h2 class="text-xl font-bold text-slate-900 mb-2">Memoria Descriptiva del Diseño</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Basado en los requerimientos manuscritos proporcionados, este proyecto arquitectónico de tres niveles maximiza la comodidad, accesibilidad y eficiencia espacial. Cuenta con una <strong>Planta Baja</strong> enfocada en la vida social y áreas accesibles, una <strong>Planta Alta</strong> dedicada al descanso privado con habitaciones en suite, y un <strong>Nivel Subterráneo</strong> exclusivo para el bienestar y la recreación acuática subterránea.
+            </p>
+        </div>
+
+        <!-- Level Selector Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6" id="level-tabs">
+            <button onclick="switchLevel('pb')" id="btn-pb" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-blue-600 text-white flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Planta Baja
+            </button>
+            <button onclick="switchLevel('pa')" id="btn-pa" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                Planta Alta
+            </button>
+            <button onclick="switchLevel('sub')" id="btn-sub" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                Nivel Subterráneo
+            </button>
+        </div>
+
+        <!-- Interactive Blueprint Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Floor Plan Graphic / Schematic Area -->
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 id="plan-title" class="text-lg font-bold text-slate-900">Planta Baja - Distribución Arquitectónica</h3>
+                        <p id="plan-subtitle" class="text-xs text-slate-500">Áreas sociales, cocina principal, accesibilidad universal y patio exterior.</p>
+                    </div>
+                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2.5 py-1 rounded border border-slate-200">Escala 1:100</span>
+                </div>
+
+                <!-- Visual Blueprint Canvas / Interactive Grid -->
+                <div class="blueprint-grid relative flex-grow min-h-[400px] bg-slate-50 border-2 border-dashed border-blue-200 rounded-xl p-4 flex items-center justify-center overflow-hidden">
+                    
+                    <!-- SVG Interactive Blueprint Diagram -->
+                    <div id="blueprint-svg-container" class="w-full h-full flex items-center justify-center">
+                        <!-- Planta Baja Diagram -->
+                        <div id="diagram-pb" class="w-full h-full grid grid-cols-3 gap-3">
+                            <div onclick="selectRoom('Habitación Accesible')" class="room-card bg-emerald-50 border border-emerald-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-emerald-800">Habitación Accesible</span>
+                                <span class="text-[11px] text-emerald-700">4.0m x 4.5m (18 m²)</span>
+                                <span class="text-[10px] bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded w-max mt-1">+ Baño adaptado</span>
+                            </div>
+                            <div onclick="selectRoom('Sala Comedor')" class="room-card bg-blue-50 border border-blue-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-blue-900">Sala - Comedor Integrado</span>
+                                <span class="text-[11px] text-blue-700">6.5m x 5.0m (32.5 m²)</span>
+                                <span class="text-[10px] bg-blue-200 text-blue-900 px-1.5 py-0.5 rounded w-max mt-1">Doble altura y ventanales</span>
+                            </div>
+                            <div onclick="selectRoom('Cocina con Isla')" class="room-card bg-amber-50 border border-amber-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-amber-900">Cocina Grande con Isla Central</span>
+                                <span class="text-[11px] text-amber-700">5.0m x 4.0m (20 m²)</span>
+                                <span class="text-[10px] bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded w-max mt-1">Islote desayunador + despensa</span>
+                            </div>
+                            <div onclick="selectRoom('Baño Social')" class="room-card bg-slate-100 border border-slate-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-slate-800">Baño Social</span>
+                                <span class="text-[11px] text-slate-600">2.0m x 2.2m (4.4 m²)</span>
+                                <span class="text-[10px] bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded w-max mt-1">Visitas</span>
+                            </div>
+                            <div onclick="selectRoom('Cuarto de Lavado')" class="room-card bg-indigo-50 border border-indigo-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-indigo-900">Cuarto de Lavado</span>
+                                <span class="text-[11px] text-indigo-700">2.5m x 3.0m (7.5 m²)</span>
+                                <span class="text-[10px] bg-indigo-200 text-indigo-900 px-1.5 py-0.5 rounded w-max mt-1">Servicio</span>
+                            </div>
+                            <div onclick="selectRoom('Terraza y Piscina Exterior')" class="room-card bg-teal-50 border border-teal-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-teal-900">Terraza / Patio Grande con Piscina</span>
+                                <span class="text-[11px] text-teal-700">10.0m x 6.0m (60 m²)</span>
+                                <span class="text-[10px] bg-teal-200 text-teal-900 px-1.5 py-0.5 rounded w-max mt-1">Área recreativa y solárium</span>
+                            </div>
+                        </div>
+
+                        <!-- Planta Alta Diagram (Hidden by default) -->
+                        <div id="diagram-pa" class="w-full h-full hidden grid-cols-2 gap-3">
+                            <div onclick="selectRoom('Cuarto Principal')" class="room-card bg-purple-50 border border-purple-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-purple-900">Cuarto Principal (Master Suite)</span>
+                                <span class="text-[11px] text-purple-700">6.0m x 4.5m (27 m²)</span>
+                                <span class="text-[10px] bg-purple-200 text-purple-900 px-1.5 py-0.5 rounded w-max mt-1">Baño integrado con tina y vestidor</span>
+                            </div>
+                            <div onclick="selectRoom('Habitación Infantil')" class="room-card bg-rose-50 border border-rose-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-rose-900">Habitación Infantil</span>
+                                <span class="text-[11px] text-rose-700">4.0m x 4.0m (16 m²)</span>
+                                <span class="text-[10px] bg-rose-200 text-rose-900 px-1.5 py-0.5 rounded w-max mt-1">+ Baño integrado</span>
+                            </div>
+                            <div onclick="selectRoom('Oficina')" class="room-card bg-sky-50 border border-sky-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm">
+                                <span class="text-xs font-bold text-sky-900">Oficina / Estudio</span>
+                                <span class="text-[11px] text-sky-700">3.5m x 4.0m (14 m²)</span>
+                                <span class="text-[10px] bg-sky-200 text-sky-900 px-1.5 py-0.5 rounded w-max mt-1">Espacio de trabajo ergonómico</span>
+                            </div>
+                            <div onclick="selectRoom('Terraza Grande')" class="room-card bg-cyan-50 border border-cyan-300 rounded-lg p-3 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-xs font-bold text-cyan-900">Terraza Grande Superior</span>
+                                <span class="text-[11px] text-cyan-700">8.0m x 3.5m (28 m²)</span>
+                                <span class="text-[10px] bg-cyan-200 text-cyan-900 px-1.5 py-0.5 rounded w-max mt-1">Vista panorámica frontal</span>
+                            </div>
+                        </div>
+
+                        <!-- Nivel Subterráneo Diagram (Hidden by default) -->
+                        <div id="diagram-sub" class="w-full h-full hidden grid-cols-2 gap-3">
+                            <div onclick="selectRoom('Alberca Subterránea')" class="room-card bg-blue-900 text-white border border-blue-700 rounded-lg p-4 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-sm font-bold text-blue-200">Alberca Grande Subterránea / Climatizada</span>
+                                <span class="text-xs text-blue-300">10.0m x 5.0m (50 m²)</span>
+                                <span class="text-[10px] bg-blue-700 text-blue-100 px-2 py-0.5 rounded w-max mt-1">Iluminación LED perimetral y sistema de filtración avanzado</span>
+                            </div>
+                            <div onclick="selectRoom('Mini Gimnasio')" class="room-card bg-orange-50 border border-orange-300 rounded-lg p-4 flex flex-col justify-between cursor-pointer shadow-sm col-span-2">
+                                <span class="text-sm font-bold text-orange-900">Mini Gimnasio & Zona Wellness</span>
+                                <span class="text-xs text-orange-700">7.0m x 5.0m (35 m²)</span>
+                                <span class="text-[10px] bg-orange-200 text-orange-900 px-2 py-0.5 rounded w-max mt-1">Área para pesas, cardio y estiramiento con ventilación forzada</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-2 right-3 text-[10px] text-slate-400 bg-white/80 px-2 py-0.5 rounded backdrop-blur-sm">
+                        * Haz clic en cualquier estancia para ver especificaciones técnicas.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Inspector / Technical Details Sidebar -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                        <h3 class="text-base font-bold text-slate-900">Inspector de Espacios</h3>
+                        <span class="text-xs text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full font-medium">Detalle Técnico</span>
+                    </div>
+
+                    <div id="room-details" class="space-y-4">
+                        <div>
+                            <h4 id="det-name" class="text-lg font-bold text-slate-800">Seleccione una estancia</h4>
+                            <p id="det-category" class="text-xs text-blue-600 font-semibold mt-0.5">Planta Baja</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Dimensiones</span>
+                                <span id="det-dims" class="text-sm font-semibold text-slate-700">-</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] uppercase font-bold text-slate-400">Área Estimada</span>
+                                <span id="det-area" class="text-sm font-semibold text-slate-700">-</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-700 mb-1">Acabados y Equipamiento:</span>
+                            <p id="det-desc" class="text-xs text-slate-600 leading-relaxed">
+                                Haga clic en cualquier sección del plano interactivo para consultar los materiales recomendados, instalaciones hidrosanitarias y consideraciones de diseño interior.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leyenda Arquitectónica -->
+                <div class="mt-6 pt-4 border-t border-slate-100">
+                    <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Leyenda de Niveles</h5>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-blue-50 text-blue-800 p-2 rounded border border-blue-200 font-medium">P. Baja</div>
+                        <div class="bg-purple-50 text-purple-800 p-2 rounded border border-purple-200 font-medium">P. Alta</div>
+                        <div class="bg-slate-900 text-white p-2 rounded border border-slate-800 font-medium">Subterráneo</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Comprehensive List of Requirements breakdown -->
+        <div class="mt-8 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Listado Completo de Requerimientos Arquitectónicos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="requirements-grid">
+                
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">01</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Baño Social</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ubicación estratégica en zona pública de la Planta Baja para visitas.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">02</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cocina Grande con Isla</h4>
+                        <p class="text-xs text-slate-600 mt-1">Diseño abierto con barra desayunadora, campana extractora central y despensa.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">03</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Sala Comedor</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio diáfano con excelente iluminación natural y vistas directas a la terraza.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">04</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cuarto Principal con Baño Integrado</h4>
+                        <p class="text-xs text-slate-600 mt-1">Master suite en Planta Alta con vestidor (walk-in closet) y baño privado en suite.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">05</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Habitación Infantil con Baño</h4>
+                        <p class="text-xs text-slate-600 mt-1">Dormitorio secundario en Planta Alta equipado con baño propio y zona de estudio.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">06</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Habitación Accesible (Adaptado)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ubicada en Planta Baja sin desniveles, puertas anchas y baño adaptado para movilidad reducida.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">07</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Cuarto de Lavado</h4>
+                        <p class="text-xs text-slate-600 mt-1">Área independiente de servicio con instalaciones para lavadora, secadora y tendido.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">08</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Terraza / Patio con Piscina</h4>
+                        <p class="text-xs text-slate-600 mt-1">Patio exterior amplio con zona de descanso, pérgola y piscina recreativa al aire libre.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">09</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Oficina / Estudio</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio privado e iluminado en Planta Alta ideal para home office y lectura.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">10</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Terraza Grande Superior</h4>
+                        <p class="text-xs text-slate-600 mt-1">Mirador exterior en Planta Alta conectado con el área de descanso.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">11</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Mini Gimnasio</h4>
+                        <p class="text-xs text-slate-600 mt-1">Espacio wellness en Nivel Subterráneo para ejercicio y bienestar físico.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex items-start space-x-3">
+                    <div class="bg-blue-100 text-blue-700 p-2 rounded-lg font-bold text-xs">12</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">Alberca Subterránea</h4>
+                        <p class="text-xs text-slate-600 mt-1">Piscina climatizada en sótano con tratamiento de humedad y ambiente exclusivo.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-500">
+        <p>Estudio de Arquitectura e Interiorismo • Proyecto Residencial Personalizado • Diseñado con medidas estándar y normativas constructivas.</p>
+    </footer>
+
+    <!-- JavaScript for Interactivity -->
+    <script>
+        const roomDatabase = {
+            'Habitación Accesible': {
+                cat: 'Planta Baja (Accesibilidad Universal)',
+                dims: '4.0m x 4.5m',
+                area: '18.0 m²',
+                desc: 'Diseñada sin escalones ni desniveles. Cuenta con puertas de 90 cm de ancho, sistema de domótica básica y un baño adaptado con barras de apoyo ergonómicas y ducha sin mampara.'
+            },
+            'Sala Comedor': {
+                cat: 'Planta Baja (Zona Social)',
+                dims: '6.5m x 5.0m',
+                area: '32.5 m²',
+                desc: 'Espacio integrado de concepto abierto. Cuenta con doble altura en la zona de sala, iluminación empotrada cálida y ventanales corredizos de suelo a techo hacia la terraza principal.'
+            },
+            'Cocina con Isla': {
+                cat: 'Planta Baja (Gastronomía)',
+                dims: '5.0m x 4.0m',
+                area: '20.0 m²',
+                desc: 'Cocina equipada con isla central de granito de 3x1.2 metros, gavetas de cierre suave, espacio para torre de hornos y conexión directa al cuarto de lavado.'
+            },
+            'Baño Social': {
+                cat: 'Planta Baja (Servicios)',
+                dims: '2.0m x 2.2m',
+                area: '4.4 m²',
+                desc: 'Lavamanos flotante con espejo retroiluminado LED, sanitario de doble descarga y acabados en porcelanato tipo mármol.'
+            },
+            'Cuarto de Lavado': {
+                cat: 'Planta Baja (Servicios)',
+                dims: '2.5m x 3.0m',
+                area: '7.5 m²',
+                desc: 'Área independiente con ventilación natural, lavadero de granito, conexiones para lavadora/secadora en torre y espacio de guardado para blancos.'
+            },
+            'Terraza y Piscina Exterior': {
+                cat: 'Planta Baja (Exterior)',
+                dims: '10.0m x 6.0m',
+                area: '60.0 m²',
+                desc: 'Piscina al aire libre con acabado veneciano, área de deck de madera tratada para intemperie y espacio para tumbonas y barbacoa.'
+            },
+            'Cuarto Principal': {
+                cat: 'Planta Alta (Descanso)',
+                dims: '6.0m x 4.5m',
+                area: '27.0 m²',
+                desc: 'Master suite con vestidor independiente (walk-in closet) y baño privado equipado con tina de hidromasaje y ducha separada.'
+            },
+            'Habitación Infantil': {
+                cat: 'Planta Alta (Descanso)',
+                dims: '4.0m x 4.0m',
+                area: '16.0 m²',
+                desc: 'Habitación secundaria con excelente iluminación natural, espacio para cama king o dos individuales, zona de estudio y baño integrado en suite.'
+            },
+            'Oficina': {
+                cat: 'Planta Alta (Trabajo)',
+                dims: '3.5m x 4.0m',
+                area: '14.0 m²',
+                desc: 'Estudio privado con aislamiento acústico, librerías empotradas y conexión directa de fibra óptica y red.'
+            },
+            'Terraza Grande': {
+                cat: 'Planta Alta (Exterior)',
+                dims: '8.0m x 3.5m',
+                area: '28.0 m²',
+                desc: 'Terraza superior frontal con baranda de cristal templado y acero inoxidable, ideal para contemplar las vistas exteriores.'
+            },
+            'Alberca Subterránea': {
+                cat: 'Nivel Subterráneo (Wellness)',
+                dims: '10.0m x 5.0m',
+                area: '50.0 m²',
+                desc: 'Piscina climatizada en sótano con sistema de deshumidificación industrial, iluminación subacuática ambiental y acabados de diseño minimalista.'
+            },
+            'Mini Gimnasio': {
+                cat: 'Nivel Subterráneo (Wellness)',
+                dims: '7.0m x 5.0m',
+                area: '35.0 m²',
+                desc: 'Gimnasio privado con piso de caucho de alta densidad, espejos de pared completa, ventilación mecánica y área para máquinas cardiovasculares.'
+            }
+        };
+
+        function switchLevel(level) {
+            // Reset tab styles
+            ['pb', 'pa', 'sub'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                const diag = document.getElementById(`diagram-${l}`);
+                if (l === level) {
+                    btn.className = "flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-blue-600 text-white flex items-center justify-center gap-2";
+                    diag.classList.remove('hidden');
+                    diag.classList.add('grid');
+                } else {
+                    btn.className = "flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition shadow-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center justify-center gap-2";
+                    diag.classList.add('hidden');
+                    diag.classList.remove('grid');
+                }
+            });
+
+            // Update title
+            const titles = {
+                'pb': { title: 'Planta Baja - Distribución Arquitectónica', subtitle: 'Áreas sociales, cocina principal, accesibilidad universal y patio exterior.' },
+                'pa': { title: 'Planta Alta - Zona Privada y Descanso', subtitle: 'Cuarto principal, habitación infantil, oficina y terraza superior.' },
+                'sub': { title: 'Nivel Subterráneo - Bienestar y Recreación', subtitle: 'Alberca subterránea climatizada y mini gimnasio.' }
+            };
+
+            document.getElementById('plan-title').innerText = titles[level].title;
+            document.getElementById('plan-subtitle').innerText = titles[level].subtitle;
+        }
+
+        function selectRoom(roomName) {
+            const data = roomDatabase[roomName];
+            if (!data) return;
+
+            document.getElementById('det-name').innerText = roomName;
+            document.getElementById('det-category').innerText = data.cat;
+            document.getElementById('det-dims').innerText = data.dims;
+            document.getElementById('det-area').innerText = data.area;
+            document.getElementById('det-desc').innerText = data.desc;
+        }
+
+        // Initialize with default selection
+        window.onload = function() {
+            selectRoom('Habitación Accesible');
+        };
+    </script>
+</body>
+</html>
